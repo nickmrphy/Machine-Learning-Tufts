@@ -1,0 +1,8 @@
+
+Name: Nick Murphy
+This is my first time using python so I spent multiple hours learning the
+semantics and how to use numpy. I estimate I spent about 2 hours doing this,
+then 2 hours doing problem 1 and 3 hours doing problem 2. 
+I referred to w3schools and various stack overflow posts in order to get a grasp
+on Python, as well as understanding environments, Spyder (the platform I am
+using to do python assignments in this class), and numpy. 

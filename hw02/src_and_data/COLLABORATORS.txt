@@ -1,0 +1,10 @@
+
+Name: Nick Murphy
+Time: This assignment took me about 12 hours total. I spent 4 hours doing parts 1 and 2.1, 
+      but I struggled a lot with part 2.2, which took me about 6 hours. 
+      Upon reaching part 3, I saw that I had an unnecessary line in my test_polynomials function that           resulted in my program running indefinetely on the set of higher degree polynomials. It took 
+      me a little to find this but upon fixing it the rest of my programming was smooth.
+      I asked multiple questions on piazza (about part 2.2) that helped me a lot in completing this             assignment. 
+      I also referred to w3schools, stackoverflow, and various library documentations to
+      fix my semantics mistakes as I am still getting used to programming in Python and Jupyter
+      Notebooks. 
