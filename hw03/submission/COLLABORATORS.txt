@@ -1,0 +1,4 @@
+Nick Murphy
+Collaborators.txt
+
+Time: This assignment took me about 6 hours. I spent 3 hours on parts 1-4. Creating the models easily took me the longest. I then spent 3 hours on parts 5 and 6. The resources I used to complete this assignment were in-class demos and my notes from lecture. 

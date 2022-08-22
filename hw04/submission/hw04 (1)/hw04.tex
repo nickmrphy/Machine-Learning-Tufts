@@ -1,0 +1,967 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{hw04}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{nick-murphy}{%
+\subsection{Nick Murphy}\label{nick-murphy}}
+
+\hypertarget{nmurph03}{%
+\subsection{nmurph03}\label{nmurph03}}
+
+    \hypertarget{hw04-code}{%
+\subsection{HW04 Code}\label{hw04-code}}
+
+You will complete the following notebook, as described in the PDF for
+Homework 04 (included in the download with the starter code). You will
+submit: 1. This notebook file, along with your COLLABORATORS.txt file,
+to the Gradescope link for code. 2. A PDF of this notebook and all of
+its output, once it is completed, to the Gradescope link for the PDF.
+
+Please report any questions to the
+\href{piazza.com/tufts/spring2021/comp135}{class Piazza page}.
+
+\hypertarget{import-required-libraries}{%
+\paragraph{Import required libraries}\label{import-required-libraries}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{time}
+\PY{k+kn}{import} \PY{n+nn}{warnings}
+\PY{n}{warnings}\PY{o}{.}\PY{n}{simplefilter}\PY{p}{(}\PY{n}{action}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{category}\PY{o}{=}\PY{n+ne}{FutureWarning}\PY{p}{)}
+
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{neural\PYZus{}network} \PY{k+kn}{import} \PY{n}{MLPClassifier}
+
+\PY{k+kn}{from} \PY{n+nn}{matplotlib} \PY{k+kn}{import} \PY{n}{pyplot} \PY{k}{as} \PY{n}{plt}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+
+\PY{k+kn}{from} \PY{n+nn}{MLPClassifierWithSolverLBFGS} \PY{k+kn}{import} \PY{n}{MLPClassifierLBFGS}
+
+\PY{k+kn}{from} \PY{n+nn}{viz\PYZus{}tools\PYZus{}for\PYZus{}binary\PYZus{}classifier} \PY{k+kn}{import} \PY{n}{plot\PYZus{}pretty\PYZus{}probabilities\PYZus{}for\PYZus{}clf}
+
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{load-data}{%
+\paragraph{Load data}\label{load-data}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Load data}
+\PY{n}{x\PYZus{}tr\PYZus{}N2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}xor/x\PYZus{}train.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{x\PYZus{}te\PYZus{}N2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}xor/x\PYZus{}test.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{y\PYZus{}tr\PYZus{}N} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}xor/y\PYZus{}train.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{y\PYZus{}te\PYZus{}N} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}xor/y\PYZus{}test.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{k}{assert} \PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{==} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{k}{assert} \PY{n}{x\PYZus{}te\PYZus{}N2}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{==} \PY{n}{y\PYZus{}te\PYZus{}N}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{problem-1-mlp-size-2-with-activation-relu-and-l-bfgs-solver}{%
+\subsubsection{Problem 1: MLP size {[}2{]} with activation ReLU and
+L-BFGS
+solver}\label{problem-1-mlp-size-2-with-activation-relu-and-l-bfgs-solver}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO edit this block to run from 16 different random\PYZus{}states}
+\PY{c+c1}{\PYZsh{} Save each run\PYZsq{}s trained classifier object in a list}
+
+\PY{n}{n\PYZus{}runs} \PY{o}{=} \PY{l+m+mi}{16}
+\PY{n}{start\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)}
+\PY{n}{LBFGS\PYZus{}RELU\PYZus{}loss} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{LBFSG\PYZus{}RELU\PYZus{}res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{mlp\PYZus{}lbfgs} \PY{o}{=} \PY{n}{MLPClassifierLBFGS}\PY{p}{(}
+        \PY{n}{hidden\PYZus{}layer\PYZus{}sizes}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}
+        \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.0001}\PY{p}{,}
+        \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{,} \PY{n}{tol}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,}
+        \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{i}\PY{p}{,}
+        \PY{p}{)}
+    \PY{k}{with} \PY{n}{warnings}\PY{o}{.}\PY{n}{catch\PYZus{}warnings}\PY{p}{(}\PY{n}{record}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{k}{as} \PY{n}{warn\PYZus{}list}\PY{p}{:}
+        \PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{)}
+    \PY{n}{elapsed\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{start\PYZus{}time\PYZus{}sec}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{finished LBFGS run }\PY{l+s+si}{\PYZpc{}2d}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{ after }\PY{l+s+si}{\PYZpc{}6.1f}\PY{l+s+s1}{ sec | }\PY{l+s+si}{\PYZpc{}3d}\PY{l+s+s1}{ iters | }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{ | loss }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}
+        \PY{n}{i}\PY{p}{,} \PY{n}{n\PYZus{}runs}\PY{p}{,} \PY{n}{elapsed\PYZus{}time\PYZus{}sec}\PY{p}{,}
+        \PY{n+nb}{len}\PY{p}{(}\PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}\PY{p}{,}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{converged   }\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{did\PYZus{}converge} \PY{k}{else} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NOT converged}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{loss\PYZus{}}\PY{p}{)}\PY{p}{)}
+    \PY{n}{LBFGS\PYZus{}RELU\PYZus{}loss}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}
+    \PY{n}{LBFSG\PYZus{}RELU\PYZus{}res}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}lbfgs}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+finished LBFGS run  0/16 after    0.0 sec |  29 iters | converged    | loss
+0.347
+finished LBFGS run  1/16 after    0.1 sec |  29 iters | converged    | loss
+0.477
+finished LBFGS run  2/16 after    0.1 sec |  21 iters | converged    | loss
+0.347
+finished LBFGS run  3/16 after    0.1 sec |  35 iters | converged    | loss
+0.347
+finished LBFGS run  4/16 after    0.1 sec |  29 iters | converged    | loss
+0.347
+finished LBFGS run  5/16 after    0.1 sec |  29 iters | converged    | loss
+0.000
+finished LBFGS run  6/16 after    0.1 sec |  23 iters | converged    | loss
+0.000
+finished LBFGS run  7/16 after    0.2 sec |  37 iters | converged    | loss
+0.347
+finished LBFGS run  8/16 after    0.2 sec |  15 iters | converged    | loss
+0.347
+finished LBFGS run  9/16 after    0.2 sec |  26 iters | converged    | loss
+0.000
+finished LBFGS run 10/16 after    0.2 sec |  36 iters | converged    | loss
+0.347
+finished LBFGS run 11/16 after    0.3 sec |  27 iters | converged    | loss
+0.477
+finished LBFGS run 12/16 after    0.3 sec |  39 iters | converged    | loss
+0.000
+finished LBFGS run 13/16 after    0.3 sec |  29 iters | converged    | loss
+0.347
+finished LBFGS run 14/16 after    0.3 sec |  25 iters | converged    | loss
+0.347
+finished LBFGS run 15/16 after    0.3 sec |  30 iters | converged    | loss
+0.347
+    \end{Verbatim}
+
+    \hypertarget{a-visualize-probabilistic-predictions-in-2d-feature-space-for-relu-l-bfgs}{%
+\paragraph{1 (a): Visualize probabilistic predictions in 2D feature
+space for ReLU +
+L-BFGS}\label{a-visualize-probabilistic-predictions-in-2d-feature-space-for-relu-l-bfgs}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax\PYZus{}grid} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{16}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{LBFGS\PYZus{}RELU\PYZus{}vals} \PY{o}{=} \PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{]}
+\PY{n}{LBFGS\PYZus{}RELU\PYZus{}vals} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{LBFGS\PYZus{}RELU\PYZus{}vals}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+\PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+        \PY{n}{plot\PYZus{}pretty\PYZus{}probabilities\PYZus{}for\PYZus{}clf}\PY{p}{(}\PY{n}{LBFSG\PYZus{}RELU\PYZus{}res}\PY{p}{[}\PY{n}{LBFGS\PYZus{}RELU\PYZus{}vals}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{[}\PY{n}{y}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_8_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}{%
+\paragraph{1 (b): What fraction of runs reach 0 training error? What
+happens to the others? Describe how rapidly (or slowly) things seem to
+converge.}\label{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}}
+
+    \textbf{Answer}: Since 4 models reach 0 training error, that is 4/16 =
+25\% of models reaching 0 training error. All of the others have an
+error of 0.250 The RELU and L-BFGS models seem to converge pretty
+rapidly, as the highest number of iterations was 39 and the lowest was
+15.
+
+    \hypertarget{problem-2-mlp-size-2-with-activation-logistic-and-l-bfgs-solver}{%
+\subsubsection{Problem 2: MLP size {[}2{]} with activation Logistic and
+L-BFGS
+solver}\label{problem-2-mlp-size-2-with-activation-logistic-and-l-bfgs-solver}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO edit this block to run 16 different random\PYZus{}state models with LOGISTIC activation}
+\PY{c+c1}{\PYZsh{} Save each run\PYZsq{}s trained classifier object in a list}
+\PY{n}{n\PYZus{}runs} \PY{o}{=} \PY{l+m+mi}{16}
+\PY{n}{start\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)}
+\PY{n}{LBFGS\PYZus{}log\PYZus{}loss} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{LBFSG\PYZus{}log\PYZus{}res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{mlp\PYZus{}lbfgs} \PY{o}{=} \PY{n}{MLPClassifierLBFGS}\PY{p}{(}
+        \PY{n}{hidden\PYZus{}layer\PYZus{}sizes}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}
+        \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{logistic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.0001}\PY{p}{,}
+        \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{200}\PY{p}{,} \PY{n}{tol}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,}
+        \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{i}\PY{p}{,}
+        \PY{p}{)}
+    \PY{k}{with} \PY{n}{warnings}\PY{o}{.}\PY{n}{catch\PYZus{}warnings}\PY{p}{(}\PY{n}{record}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{k}{as} \PY{n}{warn\PYZus{}list}\PY{p}{:}
+        \PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{)}
+    \PY{n}{elapsed\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{start\PYZus{}time\PYZus{}sec}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{finished LBFGS logistic run }\PY{l+s+si}{\PYZpc{}2d}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{ after }\PY{l+s+si}{\PYZpc{}6.1f}\PY{l+s+s1}{ sec | }\PY{l+s+si}{\PYZpc{}3d}\PY{l+s+s1}{ iters | }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{ | loss }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}
+        \PY{n}{i}\PY{p}{,} \PY{n}{n\PYZus{}runs}\PY{p}{,} \PY{n}{elapsed\PYZus{}time\PYZus{}sec}\PY{p}{,}
+        \PY{n+nb}{len}\PY{p}{(}\PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}\PY{p}{,}
+        \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{converged   }\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{did\PYZus{}converge} \PY{k}{else} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NOT converged}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{loss\PYZus{}}\PY{p}{)}\PY{p}{)}
+    \PY{n}{LBFGS\PYZus{}log\PYZus{}loss}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}lbfgs}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}
+    \PY{n}{LBFSG\PYZus{}log\PYZus{}res}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}lbfgs}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+finished LBFGS logistic run  0/16 after    0.1 sec |  58 iters | converged    |
+loss 0.000
+finished LBFGS logistic run  1/16 after    0.1 sec | 116 iters | converged    |
+loss 0.347
+finished LBFGS logistic run  2/16 after    0.1 sec |  45 iters | converged    |
+loss 0.347
+finished LBFGS logistic run  3/16 after    0.2 sec |  71 iters | converged    |
+loss 0.000
+finished LBFGS logistic run  4/16 after    0.2 sec |  40 iters | converged    |
+loss 0.477
+finished LBFGS logistic run  5/16 after    0.2 sec |  42 iters | converged    |
+loss 0.000
+finished LBFGS logistic run  6/16 after    0.2 sec |  50 iters | converged    |
+loss 0.000
+finished LBFGS logistic run  7/16 after    0.3 sec |  42 iters | converged    |
+loss 0.477
+finished LBFGS logistic run  8/16 after    0.3 sec |  62 iters | converged    |
+loss 0.347
+finished LBFGS logistic run  9/16 after    0.4 sec | 134 iters | converged    |
+loss 0.347
+finished LBFGS logistic run 10/16 after    0.4 sec |  92 iters | converged    |
+loss 0.347
+finished LBFGS logistic run 11/16 after    0.5 sec | 106 iters | converged    |
+loss 0.347
+finished LBFGS logistic run 12/16 after    0.5 sec |  77 iters | converged    |
+loss 0.347
+finished LBFGS logistic run 13/16 after    0.5 sec |  33 iters | converged    |
+loss 0.478
+finished LBFGS logistic run 14/16 after    0.5 sec |  53 iters | converged    |
+loss 0.000
+finished LBFGS logistic run 15/16 after    0.6 sec |  61 iters | converged    |
+loss 0.000
+    \end{Verbatim}
+
+    \hypertarget{a-visualize-probabilistic-predictions-in-2d-feature-space-for-logistic-sigmoid-l-bfgs}{%
+\paragraph{2 (a): Visualize probabilistic predictions in 2D feature
+space for Logistic Sigmoid +
+L-BFGS}\label{a-visualize-probabilistic-predictions-in-2d-feature-space-for-logistic-sigmoid-l-bfgs}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax\PYZus{}grid} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{16}\PY{p}{)}\PY{p}{)}
+\PY{n}{LBFGS\PYZus{}log\PYZus{}vals} \PY{o}{=} \PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{]}
+\PY{n}{LBFGS\PYZus{}log\PYZus{}vals} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{LBFGS\PYZus{}log\PYZus{}vals}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+\PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+        \PY{n}{plot\PYZus{}pretty\PYZus{}probabilities\PYZus{}for\PYZus{}clf}\PY{p}{(}\PY{n}{LBFSG\PYZus{}log\PYZus{}res}\PY{p}{[}\PY{n}{LBFGS\PYZus{}log\PYZus{}vals}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{[}\PY{n}{y}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}{%
+\paragraph{2 (b): What fraction of runs reach 0 training error? What
+happens to the others? Describe how rapidly (or slowly) things seem to
+converge.}\label{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}}
+
+    \textbf{Answer}: 6 of the 16 models reached 0 training error, while the
+other models had errors between 0.250 and 0.350. This means 37.5\% of
+models reached 0 training error. These models took much longer to
+converge, with the lowest number of iterations being 33 and the highest
+being 134. This is much slower than the ReLU and BFGS models.
+
+    \hypertarget{problem-3-mlp-size-2-with-activation-relu-and-sgd-solver}{%
+\subsubsection{Problem 3: MLP size {[}2{]} with activation ReLU and SGD
+solver}\label{problem-3-mlp-size-2-with-activation-relu-and-sgd-solver}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO edit this block to do 16 different runs (each with different random\PYZus{}state value)}
+\PY{c+c1}{\PYZsh{} Save each run\PYZsq{}s trained classifier object in a list }
+
+\PY{n}{n\PYZus{}runs} \PY{o}{=} \PY{l+m+mi}{16}
+\PY{n}{start\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)}
+\PY{n}{SGD\PYZus{}RELU\PYZus{}loss} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{SGD\PYZus{}RELU\PYZus{}res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{mlp\PYZus{}sgd} \PY{o}{=} \PY{n}{MLPClassifier}\PY{p}{(}
+        \PY{n}{hidden\PYZus{}layer\PYZus{}sizes}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}
+        \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.0001}\PY{p}{,}
+        \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{400}\PY{p}{,} \PY{n}{tol}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,}
+        \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{i}\PY{p}{,}
+        \PY{n}{solver}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sgd}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,}
+        \PY{n}{learning\PYZus{}rate}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adaptive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{learning\PYZus{}rate\PYZus{}init}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.0}\PY{p}{,}
+        \PY{p}{)}
+    \PY{k}{with} \PY{n}{warnings}\PY{o}{.}\PY{n}{catch\PYZus{}warnings}\PY{p}{(}\PY{n}{record}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{k}{as} \PY{n}{warn\PYZus{}list}\PY{p}{:}
+        \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{)}
+    \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{did\PYZus{}converge} \PY{o}{=} \PY{k+kc}{True} \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{warn\PYZus{}list}\PY{p}{)} \PY{o}{==} \PY{l+m+mi}{0} \PY{k}{else} \PY{k+kc}{False}
+    \PY{n}{elapsed\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{start\PYZus{}time\PYZus{}sec}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{finished SGD run }\PY{l+s+si}{\PYZpc{}2d}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{ after }\PY{l+s+si}{\PYZpc{}6.1f}\PY{l+s+s1}{ sec | }\PY{l+s+si}{\PYZpc{}3d}\PY{l+s+s1}{ epochs | }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{ | loss }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}
+        \PY{n}{i}\PY{p}{,} \PY{n}{n\PYZus{}runs}\PY{p}{,} \PY{n}{elapsed\PYZus{}time\PYZus{}sec}\PY{p}{,}
+        \PY{n+nb}{len}\PY{p}{(}\PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{converged    }\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{did\PYZus{}converge} \PY{k}{else} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NOT converged}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{loss\PYZus{}}\PY{p}{)}\PY{p}{)}
+    \PY{n}{SGD\PYZus{}RELU\PYZus{}loss}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}
+    \PY{n}{SGD\PYZus{}RELU\PYZus{}res}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}sgd}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+finished SGD run  0/16 after    6.4 sec | 267 epochs | converged     | loss
+0.347
+finished SGD run  1/16 after   14.0 sec | 307 epochs | converged     | loss
+0.478
+finished SGD run  2/16 after   20.0 sec | 239 epochs | converged     | loss
+0.347
+finished SGD run  3/16 after   29.9 sec | 400 epochs | NOT converged | loss
+0.001
+finished SGD run  4/16 after   36.8 sec | 275 epochs | converged     | loss
+0.347
+finished SGD run  5/16 after   46.8 sec | 400 epochs | NOT converged | loss
+0.001
+finished SGD run  6/16 after   56.7 sec | 400 epochs | NOT converged | loss
+0.001
+finished SGD run  7/16 after   63.5 sec | 273 epochs | converged     | loss
+0.347
+finished SGD run  8/16 after   68.8 sec | 219 epochs | converged     | loss
+0.347
+finished SGD run  9/16 after   78.0 sec | 400 epochs | NOT converged | loss
+0.001
+finished SGD run 10/16 after   87.4 sec | 394 epochs | converged     | loss
+0.478
+finished SGD run 11/16 after   96.6 sec | 400 epochs | NOT converged | loss
+0.478
+finished SGD run 12/16 after  105.9 sec | 400 epochs | NOT converged | loss
+0.002
+finished SGD run 13/16 after  112.9 sec | 304 epochs | converged     | loss
+0.347
+finished SGD run 14/16 after  120.7 sec | 331 epochs | converged     | loss
+0.347
+finished SGD run 15/16 after  129.9 sec | 400 epochs | NOT converged | loss
+0.001
+    \end{Verbatim}
+
+    \hypertarget{a-visualize-probabilistic-predictions-in-2d-feature-space-for-relu-sgd}{%
+\paragraph{3 (a): Visualize probabilistic predictions in 2D feature
+space for ReLU +
+SGD}\label{a-visualize-probabilistic-predictions-in-2d-feature-space-for-relu-sgd}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO edit to plot all 16 runs from above}
+
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax\PYZus{}grid} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{16}\PY{p}{)}\PY{p}{)}
+\PY{n}{SGD\PYZus{}RELU\PYZus{}vals} \PY{o}{=} \PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{]}
+\PY{n}{SGD\PYZus{}RELU\PYZus{}vals} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{SGD\PYZus{}RELU\PYZus{}vals}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+\PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+        \PY{n}{plot\PYZus{}pretty\PYZus{}probabilities\PYZus{}for\PYZus{}clf}\PY{p}{(}\PY{n}{SGD\PYZus{}RELU\PYZus{}res}\PY{p}{[}\PY{n}{SGD\PYZus{}RELU\PYZus{}vals}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{[}\PY{n}{y}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}{%
+\paragraph{3 (b): What fraction of runs reach 0 training error? What
+happens to the others? Describe how rapidly (or slowly) things seem to
+converge.}\label{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}}
+
+    \textbf{Answer}: 6 of the 16 models reached 0 training error, while the
+other models had errors of 0.250. This means 37.5\% of models reached 0
+training error, while 62.5\% of models had 0.25 training error. While
+7/16 models didn't converge, the ones that did required an average of
+286.56 epochs. This is significantly slower than the models above.
+
+    \hypertarget{c-what-is-most-noticeably-different-between-sgd-with-batch-size-10-and-the-previous-l-bfgs-in-part-1-using-the-same-relu-activation-function-why-do-you-believe-these-differences-exist}{%
+\paragraph{3 (c): What is most noticeably different between SGD with
+batch size 10 and the previous L-BFGS in part 1 (using the same ReLU
+activation function)? Why, do you believe, these differences
+exist?}\label{c-what-is-most-noticeably-different-between-sgd-with-batch-size-10-and-the-previous-l-bfgs-in-part-1-using-the-same-relu-activation-function-why-do-you-believe-these-differences-exist}}
+
+    \textbf{Answer}: The models that use SGD had a higher percent with 0
+training error, 37.5\%, compared to L-BFGS, 25\%. Moreover, the SGD
+models took significantly longer than L-BFGS, while also converging a
+smaller percentage of the time. This makes sense because L-BFGS uses
+both the first and second derivatives, while SGD only uses the first,
+allowing L-BFGS to converge more of the time.
+
+    \hypertarget{problem-4-mlp-size-2-with-activation-logistic-and-sgd-solver}{%
+\subsubsection{Problem 4: MLP size {[}2{]} with activation Logistic and
+SGD
+solver}\label{problem-4-mlp-size-2-with-activation-logistic-and-sgd-solver}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO edit to do 16 runs of SGD, like in previous step, but with LOGISTIC activation}
+\PY{n}{n\PYZus{}runs} \PY{o}{=} \PY{l+m+mi}{16}
+\PY{n}{SGD\PYZus{}log\PYZus{}res} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{SGD\PYZus{}log\PYZus{}loss} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{n}{start\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{mlp\PYZus{}sgd} \PY{o}{=} \PY{n}{MLPClassifier}\PY{p}{(}
+        \PY{n}{hidden\PYZus{}layer\PYZus{}sizes}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}
+        \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{logistic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.0001}\PY{p}{,}
+        \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{400}\PY{p}{,} \PY{n}{tol}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}8}\PY{p}{,}
+        \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{i}\PY{p}{,}
+        \PY{n}{solver}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sgd}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,}
+        \PY{n}{learning\PYZus{}rate}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{adaptive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{learning\PYZus{}rate\PYZus{}init}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.0}\PY{p}{,}
+        \PY{p}{)}
+    \PY{k}{with} \PY{n}{warnings}\PY{o}{.}\PY{n}{catch\PYZus{}warnings}\PY{p}{(}\PY{n}{record}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{k}{as} \PY{n}{warn\PYZus{}list}\PY{p}{:}
+        \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{)}
+    \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{did\PYZus{}converge} \PY{o}{=} \PY{k+kc}{True} \PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{warn\PYZus{}list}\PY{p}{)} \PY{o}{==} \PY{l+m+mi}{0} \PY{k}{else} \PY{k+kc}{False}
+    \PY{n}{elapsed\PYZus{}time\PYZus{}sec} \PY{o}{=} \PY{n}{time}\PY{o}{.}\PY{n}{time}\PY{p}{(}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{start\PYZus{}time\PYZus{}sec}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{finished SGD run }\PY{l+s+si}{\PYZpc{}2d}\PY{l+s+s1}{/}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{ after }\PY{l+s+si}{\PYZpc{}6.1f}\PY{l+s+s1}{ sec | }\PY{l+s+si}{\PYZpc{}3d}\PY{l+s+s1}{ epochs | }\PY{l+s+si}{\PYZpc{}s}\PY{l+s+s1}{ | loss }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}
+        \PY{n}{i}\PY{p}{,} \PY{n}{n\PYZus{}runs}\PY{p}{,} \PY{n}{elapsed\PYZus{}time\PYZus{}sec}\PY{p}{,}
+        \PY{n+nb}{len}\PY{p}{(}\PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{converged    }\PY{l+s+s1}{\PYZsq{}} \PY{k}{if} \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{did\PYZus{}converge} \PY{k}{else} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{NOT converged}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{loss\PYZus{}}\PY{p}{)}\PY{p}{)}
+    \PY{n}{SGD\PYZus{}log\PYZus{}loss}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}sgd}\PY{o}{.}\PY{n}{loss\PYZus{}curve\PYZus{}}\PY{p}{)}
+    \PY{n}{SGD\PYZus{}log\PYZus{}res}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{mlp\PYZus{}sgd}\PY{p}{)}
+    
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+finished SGD run  0/16 after    3.4 sec | 161 epochs | converged     | loss
+0.693
+finished SGD run  1/16 after   11.7 sec | 400 epochs | NOT converged | loss
+0.005
+finished SGD run  2/16 after   20.0 sec | 400 epochs | NOT converged | loss
+0.005
+finished SGD run  3/16 after   24.4 sec | 215 epochs | converged     | loss
+0.693
+finished SGD run  4/16 after   32.7 sec | 400 epochs | NOT converged | loss
+0.351
+finished SGD run  5/16 after   41.0 sec | 400 epochs | NOT converged | loss
+0.005
+finished SGD run  6/16 after   49.5 sec | 400 epochs | NOT converged | loss
+0.005
+finished SGD run  7/16 after   57.8 sec | 400 epochs | NOT converged | loss
+0.351
+finished SGD run  8/16 after   66.1 sec | 400 epochs | NOT converged | loss
+0.351
+finished SGD run  9/16 after   74.4 sec | 400 epochs | NOT converged | loss
+0.351
+finished SGD run 10/16 after   77.0 sec | 124 epochs | converged     | loss
+0.693
+finished SGD run 11/16 after   85.3 sec | 400 epochs | NOT converged | loss
+0.005
+finished SGD run 12/16 after   93.5 sec | 400 epochs | NOT converged | loss
+0.005
+finished SGD run 13/16 after  101.9 sec | 400 epochs | NOT converged | loss
+0.353
+finished SGD run 14/16 after  110.2 sec | 400 epochs | NOT converged | loss
+0.007
+finished SGD run 15/16 after  118.5 sec | 400 epochs | NOT converged | loss
+0.005
+    \end{Verbatim}
+
+    \hypertarget{a-visualize-probabilistic-predictions-in-2d-feature-space-for-logistic-sgd}{%
+\paragraph{4(a): Visualize probabilistic predictions in 2D feature space
+for Logistic +
+SGD}\label{a-visualize-probabilistic-predictions-in-2d-feature-space-for-logistic-sgd}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} TODO edit to plot all 16 runs from previous step}
+
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax\PYZus{}grid} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{16}\PY{p}{)}\PY{p}{)}
+\PY{n}{SGD\PYZus{}log\PYZus{}vals} \PY{o}{=} \PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n\PYZus{}runs}\PY{p}{)}\PY{p}{]}
+\PY{n}{SGD\PYZus{}log\PYZus{}vals} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{SGD\PYZus{}log\PYZus{}vals}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}
+\PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+    \PY{k}{for} \PY{n}{y} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{:}
+        \PY{n}{plot\PYZus{}pretty\PYZus{}probabilities\PYZus{}for\PYZus{}clf}\PY{p}{(}\PY{n}{SGD\PYZus{}log\PYZus{}res}\PY{p}{[}\PY{n}{SGD\PYZus{}log\PYZus{}vals}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{[}\PY{n}{y}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{x\PYZus{}tr\PYZus{}N2}\PY{p}{,} \PY{n}{y\PYZus{}tr\PYZus{}N}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_28_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}{%
+\paragraph{4 (b): What fraction of runs reach 0 training error? What
+happens to the others? Describe how rapidly (or slowly) things seem to
+converge.}\label{b-what-fraction-of-runs-reach-0-training-error-what-happens-to-the-others-describe-how-rapidly-or-slowly-things-seem-to-converge.}}
+
+    \textbf{Answer}: 8 of the 16 classifiers reached 0 training error, while
+the other classifiers had errors from 0.350 to 0.498. This means 50\% of
+classifiers reached 0 training error, while 50\% of classifiers had 0.5
+training error. While 13/16 classifiers didn't converge, the ones that
+did required an average of 178.33 epochs.
+
+    \hypertarget{c-what-is-most-noticeably-different-between-sgd-with-batch-size-10-and-the-previous-l-bfgs-runs-in-part-2-using-the-same-logistic-activation-function-why-do-you-believe-these-differences-exist}{%
+\paragraph{4 (c): What is most noticeably different between SGD with
+batch size 10 and the previous L-BFGS runs in part 2 (using the same
+logistic activation function)? Why, do you believe, these differences
+exist?}\label{c-what-is-most-noticeably-different-between-sgd-with-batch-size-10-and-the-previous-l-bfgs-runs-in-part-2-using-the-same-logistic-activation-function-why-do-you-believe-these-differences-exist}}
+
+    \textbf{Answer}: The models produced with Logistic activation and SGD
+had a higher number and percent of models that reached 0 training error,
+50\%, than the previous L-BFGS from part 2, which had 37.5\% of models
+reach 0 training error. However, the models produced in this section
+took much longer, as well as converged significantly less than in part
+2. This could be because the SGD uses the first derivative, while the
+L-BFGS uses both the first and second derivatives.
+
+    \hypertarget{problem-5-comparing-loss_curves}{%
+\subsubsection{Problem 5: Comparing
+loss\_curves}\label{problem-5-comparing-loss_curves}}
+
+    \hypertarget{a-plot-loss_curves-for-each-method-in-2-x-2-subplot-grid}{%
+\paragraph{5 (a): Plot loss\_curves for each method in 2 x 2 subplot
+grid}\label{a-plot-loss_curves-for-each-method-in-2-x-2-subplot-grid}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax\PYZus{}grid} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{nrows}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{ncols}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{sharex}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{sharey}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} TODO plot 16 curves for each of the 2x2 settings of solver and activation}
+\PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{)}\PY{p}{:}
+    \PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{LBFGS\PYZus{}RELU\PYZus{}loss}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{)}
+    \PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{LBFGS\PYZus{}log\PYZus{}loss}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{)}
+    \PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{SGD\PYZus{}RELU\PYZus{}loss}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{)}
+    \PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{SGD\PYZus{}log\PYZus{}loss}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{p}{)}
+    
+\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L\PYZhy{}BFGS ReLU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{L\PYZhy{}BFGS Logistic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SGD ReLU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax\PYZus{}grid}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SGD Logistic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylim}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{1.0}\PY{p}{]}\PY{p}{)}\PY{p}{;} \PY{c+c1}{\PYZsh{} keep this y limit so it\PYZsq{}s easy to compare across plots}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{b-from-this-overview-plot-plus-your-detailed-plots-from-prior-steps-which-activation-function-seems-easier-to-optimize-the-relu-or-the-logistic-sigmoid-which-requires-most-iterations-in-general}{%
+\paragraph{5 (b): From this overview plot (plus your detailed plots from
+prior steps), which activation function seems easier to optimize, the
+ReLU or the Logistic Sigmoid? Which requires most iterations in
+general?}\label{b-from-this-overview-plot-plus-your-detailed-plots-from-prior-steps-which-activation-function-seems-easier-to-optimize-the-relu-or-the-logistic-sigmoid-which-requires-most-iterations-in-general}}
+
+    \textbf{Answer:} Because the ReLU activation functions loss curves drop
+to 0 earlier than that of Logistic Sigmoid, it appears easier to
+optimize. SGD with the Logistic Sigmoid activation function takes the
+most iterations.
+
+    \hypertarget{c-are-you-convinced-that-one-activation-function-is-always-easier-to-optimize-suggest-3-additional-experimental-comparisons-that-would-be-informative.}{%
+\paragraph{5 (c): Are you convinced that one activation function is
+always easier to optimize? Suggest 3 additional experimental comparisons
+that would be
+informative.}\label{c-are-you-convinced-that-one-activation-function-is-always-easier-to-optimize-suggest-3-additional-experimental-comparisons-that-would-be-informative.}}
+
+    \textbf{Answer}: These experiments have not convinced me that the ReLU
+activation function is easier to optimize because we used one data set
+to test. To further compare these activation functions, we could first
+use different data sets to test that the conclusions made during these
+experiments hold with other data sets. Another way to compare these
+activation functions is to use different solvers, such as the default
+adam solver. Further, changing the parameters of the MLPClassifier
+function could be informative on the different performances of these
+activation functions under differing parameters.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

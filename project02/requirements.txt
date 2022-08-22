@@ -1,0 +1,13 @@
+Nick Murphy
+ML Project 2
+
+Time: Day 1 (Monday): 3 hours
+      Day 2 (Tuesday): 5 hours
+      Day 3 (Thursday): 5 hours
+      Day 4 (Monday): 5 hours
+      Day 5 (Tuesday): 5 hours
+      Day 6 (Thursday): 4 hours
+      Total: 27 hours
+
+Resources: in class demos and lecture notes, w3 schools for python semantics, provided resources for information
+           on word embedding vectors

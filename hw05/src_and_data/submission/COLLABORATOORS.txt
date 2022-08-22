@@ -1,0 +1,7 @@
+Nick Murphy
+Comp135: Machine Learning
+Homework 5 Collaborators.txt
+
+Time: 6-8 hours
+
+Resources: Discussed information-theory heuristic with Mattia, lecture notes, in-class demos, w3 schools for python semantics

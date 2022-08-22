@@ -1,0 +1,6 @@
+Nick Murphy
+ML Homework 4
+
+Time: 1 hour planning, 3 hours coding, 1 hour debugging (Total of 5 hours)
+
+Resources: Lecture notes, in-class demos, Sklearn documentation, W3 schools for python semantics
