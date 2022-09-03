@@ -11,6 +11,6 @@ hw04: Exploring Multi Layer Perceptron models using XOR data (examining optimiza
 
 hw05: Decision Trees
 
-Project 1: Image Classification
+Project 1: Image Classifier
 
 Project 2: Review Sentiment Classifier (NLP)
